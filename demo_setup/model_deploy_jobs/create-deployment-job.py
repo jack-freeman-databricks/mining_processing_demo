@@ -1,11 +1,4 @@
 # Databricks notebook source
-# MAGIC %md
-# MAGIC ### Deployment Job Creation
-# MAGIC This notebook cell when run will create a deployment job for each of our models we have just deployed.
-# MAGIC See documentation at: [Documentation](https://docs.databricks.com/aws/en/mlflow/deployment-job)
-
-# COMMAND ----------
-
 # MAGIC %pip install mlflow
 # MAGIC dbutils.library.restartPython() 
 
