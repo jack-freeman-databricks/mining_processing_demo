@@ -4,14 +4,14 @@
       "name": "ced5d677",
       "displayName": "gold_iron_ore_predictions",
       "queryLines": [
-        "SELECT * FROM jack_demos.mining_processing_demo.gold_iron_ore_predictions"
+        "SELECT * FROM jack_demos.mining_demo.gold_iron_ore_predictions"
       ]
     },
     {
       "name": "feb2bc89",
       "displayName": "gold_iron_ore_optimisations",
       "queryLines": [
-        "SELECT *  FROM jack_demos.mining_processing_demo.gold_iron_ore_optimisations\n"
+        "SELECT *  FROM jack_demos.mining_demo.gold_iron_ore_optimisations\n"
       ]
     }
   ],
@@ -296,7 +296,7 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "ced5d677",
+                  "datasetName": "feb2bc89",
                   "fields": [
                     {
                       "name": "hourly(date)",

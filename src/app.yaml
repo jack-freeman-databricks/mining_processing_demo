@@ -1,11 +1,15 @@
-command: [
-  "streamlit", 
-  "run",
-  "app.py"
-]
-
+command:
+- streamlit
+- run
+- app.py
 env:
-  - name: "DATABRICKS_WAREHOUSE_ID"
-    valueFrom: "sql-warehouse"
-  - name: STREAMLIT_BROWSER_GATHER_USAGE_STATS
-    value: "false"
+- name: DATABRICKS_WAREHOUSE_ID
+  valueFrom: sql-warehouse
+- name: STREAMLIT_BROWSER_GATHER_USAGE_STATS
+  value: 'false'
+- name: TABLE_NAME
+  value: jack_demos.mining_demo.gold_iop_features_version_demo
+- name: FE_ENDPOINT_NAME
+  value: mining_demo-fe_model-serving-endpoint
+- name: SI_ENDPOINT_NAME
+  value: mining_demo-si_model-serving-endpoint

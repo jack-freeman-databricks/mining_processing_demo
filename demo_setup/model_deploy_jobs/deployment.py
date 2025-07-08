@@ -42,3 +42,19 @@ try:
   w.serving_endpoints.update_config(name=serving_endpoint_name, served_entities=served_entities)
 except ResourceDoesNotExist:
   w.serving_endpoints.create(name=serving_endpoint_name, config=EndpointCoreConfigInput(served_entities=served_entities))
+
+# COMMAND ----------
+
+endpoint_details = w.serving_endpoints.get(name=serving_endpoint_name)
+endpoint_id = endpoint_details.id
+
+w.permissions.set(
+    request_object_type='serving-endpoints',
+    request_object_id=endpoint_id,
+    access_control_list=[
+        {
+            "group_name": "users",
+            "permission_level": "CAN_QUERY",
+        }
+    ]
+)

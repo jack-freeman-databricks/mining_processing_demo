@@ -14,6 +14,10 @@ import json
 w = WorkspaceClient()
 cfg = Config()
 
+table_name = os.getenv("TABLE_NAME")
+fe_endpoint_name = os.getenv("FE_ENDPOINT_NAME")
+si_endpoint_name = os.getenv("SI_ENDPOINT_NAME")
+
 # Retrieve user access token from Streamlit context headers
 # This is crucial for authenticating with Databricks SQL Warehouse
 user_token = st.context.headers.get('X-Forwarded-Access-Token')
@@ -55,7 +59,7 @@ def load_dates_for_selection() -> pd.DataFrame:
     """
     Loads distinct dates from the 'gold_iop_features_version_demo' table for the date selection box.
     """
-    query = f"SELECT DISTINCT CAST(date AS DATE) AS date_col FROM mining_iron_ore_processing_demo_catalog.iop_schema.gold_iop_features_version_demo ORDER BY date_col LIMIT 5000"
+    query = f"SELECT DISTINCT CAST(date AS DATE) AS date_col FROM {table_name} ORDER BY date_col LIMIT 5000"
     # Call the cached SQL query function with the user token
     df_dates = sql_query_with_user_token(query, token=user_token)
     return df_dates
@@ -67,7 +71,7 @@ def load_data_for_app(selected_date: datetime.date) -> pd.DataFrame:
     """
     # Construct the SQL query. Note: We are still filtering by date, but the SELECT *
     # is assumed to bring back the full timestamp in the 'date' column.
-    query = f"SELECT * EXCEPT(`_rescued_data`, `Percent_iron_concentrate`, `percent_silica_concentrate`) FROM mining_iron_ore_processing_demo_catalog.iop_schema.gold_iop_features_version_demo WHERE CAST(date AS DATE) = '{selected_date.strftime('%Y-%m-%d')}' LIMIT 5000"
+    query = f"SELECT * EXCEPT(`_rescued_data`, `Percent_iron_concentrate`, `percent_silica_concentrate`) FROM {table_name} WHERE CAST(date AS DATE) = '{selected_date.strftime('%Y-%m-%d')}' LIMIT 5000"
     # Call the cached SQL query function with the user token
     df = sql_query_with_user_token(query, token=user_token)
     return df
@@ -85,13 +89,13 @@ def send_to_databricks_serving_endpoint(record_data: dict):
     try:
         # Query the first model serving endpoint
         fe_response = w.serving_endpoints.query(
-            name="iop_schema-fe_model-serving-endpoint",
+            name=fe_endpoint_name,
             dataframe_records=input_payload_records
         )
         
         # Query the second model serving endpoint
         si_response = w.serving_endpoints.query(
-            name="iop_schema-si_model-serving-endpoint",
+            name=si_endpoint_name,
             dataframe_records=input_payload_records
         )
         
@@ -126,6 +130,7 @@ with st.sidebar:
         fixed_dates = sorted([d.date() for d in pd.to_datetime(dates_df['date_col']).unique()])
     else:
         st.error("Could not load distinct dates from the database. Please check the query and table schema.")
+        st.dataframe(dates_df)
 
     # Prepare the options for the date selectbox, including a placeholder
     date_options = ["Select a Date..."] + [d.strftime('%Y-%m-%d') for d in fixed_dates]
@@ -318,4 +323,5 @@ else:
     else:
         # Fallback for any other unhandled states
         st.info("Waiting for data selection to enable the form. Please make your selections in the sidebar.")
+
 
