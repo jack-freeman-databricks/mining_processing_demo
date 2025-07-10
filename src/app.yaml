@@ -8,8 +8,8 @@ env:
 - name: STREAMLIT_BROWSER_GATHER_USAGE_STATS
   value: 'false'
 - name: TABLE_NAME
-  value: jack_demos.iop_schema.gold_iop_features_version_demo
+  value: jack_demos.iop_schema_v2.gold_iop_features_version_demo
 - name: FE_ENDPOINT_NAME
-  value: iop_schema-fe_model-serving-endpoint
+  value: iop_schema_v2-fe_model-serving-endpoint
 - name: SI_ENDPOINT_NAME
-  value: iop_schema-si_model-serving-endpoint
+  value: iop_schema_v2-si_model-serving-endpoint
