@@ -45,16 +45,18 @@ except ResourceDoesNotExist:
 
 # COMMAND ----------
 
-endpoint_details = w.serving_endpoints.get(name=serving_endpoint_name)
-endpoint_id = endpoint_details.id
+from databricks.sdk.service.iam import PermissionLevel, AccessControlRequest
 
-w.permissions.set(
-    request_object_type='serving-endpoints',
-    request_object_id=endpoint_id,
+endpoint_id = w.serving_endpoints.get(name=serving_endpoint_name).id
+
+# Define the permission rule and apply it to the endpoint.
+# This grants all users in the workspace the ability to query the endpoint.
+w.serving_endpoints.update_permissions(
+    serving_endpoint_id=endpoint_id,
     access_control_list=[
-        {
-            "group_name": "users",
-            "permission_level": "CAN_QUERY",
-        }
+        AccessControlRequest(
+            group_name="users",
+            permission_level=PermissionLevel.CAN_QUERY
+        )
     ]
 )
